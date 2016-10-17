@@ -9,10 +9,10 @@ import RecipesToShowReducer from './reducer-recipesToShow';
 
 const reducers = combineReducers({
 
-    allRecipes: AllRecipesReducer,
-    recipe: RecipeReducer,
-    starredRecipes: StarredReducer,
-    recipesToShow: RecipesToShowReducer
+  allRecipes: AllRecipesReducer,
+  recipe: RecipeReducer,
+  starredRecipes: StarredReducer,
+  recipesToShow: RecipesToShowReducer
 });
 
 export default reducers;

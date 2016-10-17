@@ -8,8 +8,8 @@ import App from './containers/App';
 const store = createStore(reducers);
 
 ReactDOM.render(
-    <Provider store={store}>
-       <App />
-    </Provider>,
-    document.getElementById('app')
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('app')
 );
