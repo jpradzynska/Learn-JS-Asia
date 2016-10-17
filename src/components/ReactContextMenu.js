@@ -1,25 +1,24 @@
 import React, {PropTypes} from 'react';
-import {bindActionCreators} from 'redux';
-import {connect} from 'react-redux';
-import * as actions from '../actions/recipeActions';
 
-class ContextMenu extends React.Component {
+export default class ContextMenu extends React.Component {
 
   static propTypes = {
     recipe: PropTypes.object.isRequired,
     contextID: PropTypes.string.isRequired,
-    items: PropTypes.arrayOf(PropTypes.object).isRequired
+    items: PropTypes.arrayOf(PropTypes.object).isRequired,
+    actions: React.PropTypes.object.isRequired
   }
 
   render() {
     const elementUniqueId = 'context-menu-' + this.props.contextID;
     const visibilityClass = (elementUniqueId === this.props.recipe.currentlyOpenContextMenuId) ? 'visible context-menu' : 'invisible context-menu';
+    const {actions: {closeContextMenu}} = this.props;
     return (
-      <div id={elementUniqueId} className={visibilityClass} onMouseLeave={this.props.closeContextMenu}>
+      <div id={elementUniqueId} className={visibilityClass} onMouseLeave={closeContextMenu}>
 
         {this.props.items.map((item) => {
           const clickHandler = () => {
-            this.props.closeContextMenu();
+            closeContextMenu();
             item.function();
           };
 
@@ -37,17 +36,3 @@ class ContextMenu extends React.Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    recipe: state.recipe
-  }
-}
-
-function matchDispatchToProps(dispatch) {
-  return bindActionCreators({
-    closeContextMenu: actions.closeContextMenu
-  }, dispatch);
-}
-
-export default connect(mapStateToProps, matchDispatchToProps)(ContextMenu);

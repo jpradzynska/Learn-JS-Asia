@@ -2,36 +2,55 @@ require('normalize.css/normalize.css');
 require('styles/App.css');
 
 import React, {Component, PropTypes} from 'react';
-import {bindActionCreators} from 'redux';
+import mapStateToProps from '../containers/mapStateToProps';
+import mapDispatchToProps from '../containers/mapDispatchToProps';
 import {connect} from 'react-redux';
 import RecipeBox from './RecipeBox.js';
 import SearchRecipesService from './../services/SearchRecipesService.js';
-import * as actions from '../actions/recipeActions';
 
-
-class RecipesList extends Component {
+@connect(mapStateToProps, mapDispatchToProps)
+export default class RecipesList extends Component {
 
   static propTypes = {
     allRecipes: PropTypes.arrayOf(PropTypes.object).isRequired,
-    recipesToShow: PropTypes.arrayOf(PropTypes.object).isRequired
+    recipesToShow: PropTypes.arrayOf(PropTypes.object).isRequired,
+    actions: React.PropTypes.object.isRequired
   }
 
   componentWillMount() {
     this.search = new SearchRecipesService();
-    this.props.showRecipes(this.props.allRecipes);
   }
 
   handleSearch(event) {
     const searchQuery = event.target.value;
     const allRecipes = this.props.allRecipes;
     let filteredRecipesList = this.search.filterRecipes(searchQuery, allRecipes);
-    this.props.showRecipes(filteredRecipesList);
+    const {actions: {showRecipes}} = this.props;
+    showRecipes(filteredRecipesList);
+  }
+
+  handleShowMoreRecipes() {
+    let currentlyShownRecipes = this.props.recipesToShow;
+    let lastDisplayRecipe = currentlyShownRecipes[currentlyShownRecipes.length-1];
+    const {actions: {showMoreRecipes}} = this.props;
+    showMoreRecipes({lastDisplayed: lastDisplayRecipe.id || 0, fetch: 4});
+  }
+
+  getDocHeight() {
+    let doc = document;
+    return Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight, doc.body.offsetHeight, doc.documentElement.offsetHeight, doc.body.clientHeight, doc.documentElement.clientHeight);
   }
 
   render() {
+    window.onscroll = () => {
+      if ((window.scrollY + window.innerHeight) == this.getDocHeight()) {
+        this.handleShowMoreRecipes();
+      }
+    };
+
     const recipesBoxes = this.props.recipesToShow.map(recipe => {
       return (
-        <RecipeBox key={recipe.name} recipeFromParent={recipe}/>
+        <RecipeBox {...this.props} key={recipe.id} recipeFromParent={recipe}/>
       );
     });
     return (
@@ -47,17 +66,3 @@ class RecipesList extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    allRecipes: state.allRecipes,
-    recipesToShow: state.recipesToShow
-  }
-}
-
-function matchDispatchToProps(dispatch) {
-  return bindActionCreators({
-    showRecipes: actions.showRecipes
-  }, dispatch);
-}
-
-export default connect(mapStateToProps, matchDispatchToProps)(RecipesList);

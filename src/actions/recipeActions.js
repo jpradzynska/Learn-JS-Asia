@@ -6,6 +6,7 @@ export const PRINT_RECIPE = 'PRINT_RECIPE';
 export const STAR_RECIPE = 'STAR_RECIPE';
 export const REMOVE_STAR_RECIPE = 'REMOVE_STAR_RECIPE';
 export const SHOW_RECIPES = 'SHOW_RECIPES';
+export const SHOW_MORE_RECIPES = 'SHOW_MORE_RECIPES';
 
 export const openContextMenu = (openedContextMenuId) => {
   return {
@@ -16,8 +17,7 @@ export const openContextMenu = (openedContextMenuId) => {
 
 export const closeContextMenu = () => {
   return {
-    type: CLOSE_CONTEXT_MENU,
-    payload: ''
+    type: CLOSE_CONTEXT_MENU
   }
 };
 
@@ -30,8 +30,7 @@ export const hoverRecipeBox = (hoveredRecipeBoxId) => {
 
 export const unhoverRecipeBox = () => {
   return {
-    type: UNHOVER_RECIPE_BOX,
-    payload: ''
+    type: UNHOVER_RECIPE_BOX
   }
 };
 
@@ -60,5 +59,12 @@ export const showRecipes = (recipesToShow) => {
   return {
     type: SHOW_RECIPES,
     payload: recipesToShow
+  }
+}
+
+export const showMoreRecipes = (formData) => {
+  return {
+    type: SHOW_MORE_RECIPES,
+    payload: formData
   }
 };
